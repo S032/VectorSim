@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <GL/glu.h>
@@ -35,7 +36,7 @@ private:
     void initShaders();
     void checkStatus(unsigned int shader, unsigned int checkStatus);
     void drawGrid(float step);
-    void RotVector(float theta);
+    glm::vec2 RotVector(glm::vec2 vector, float theta);
     void drawVector(glm::vec2 vector, glm::vec3 color);
     void drawVector(glm::vec2 vector, glm::vec3 color, glm::vec2 origin);
     void mainLoop();

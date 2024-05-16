@@ -226,6 +226,18 @@ void Engine::drawGrid(float step) {
     
 }
 
+glm::vec2 Engine::RotVector(glm::vec2 vector, float theta) {
+    float theta_rad = (theta * M_PI) / 180.0f;
+    glm::mat2x2 IdentityMat = glm::mat2x2(0.0f);
+    IdentityMat[0][0] = glm::cos(theta_rad);
+    IdentityMat[1][0] = glm::sin(theta_rad);
+    IdentityMat[0][1] = -glm::sin(theta_rad);
+    IdentityMat[1][1] = glm::cos(theta_rad);
+
+    glm::vec2 resVec = IdentityMat * vector;
+    return resVec;
+}
+
 void Engine::drawVector(glm::vec2 vector, glm::vec3 _color) {
     std::vector<float> vertices = {
         0, 0, _color.x, _color.y, _color.z, 1,
@@ -279,19 +291,22 @@ void Engine::drawVector(glm::vec2 vector, glm::vec3 _color, glm::vec2 origin) {
 }
 
 void Engine::mainLoop() {
+    float theta = 0.0f;
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.0196f, 0.1412f, 0.098f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         drawGrid(5.0f);
+
+        //vec rotation in R^2
+        glm::mat2x2 trans = glm::mat2x2(0.0f);
+
         glm::vec2 vec1 = {1, 0};
-        glm::vec2 vec2 = {1, 1};
-        vec1 *= 2;
-        vec2 *= 2;
-        drawVector(vec1, RED);
-        vec1 -= vec2;
-        drawVector(vec2, BLUE);
-        drawVector(vec1, GREEN, vec2);
+        vec1 *= 8;
+        glm::vec rotvec1 = RotVector(vec1, theta);
+        theta += 0.5f;
+        drawVector(rotvec1, YELLOW);
+        drawVector({rotvec1.x, 0}, RED);
+        drawVector({0, rotvec1.y}, GREEN, {rotvec1.x, 0});
 
         glfwSwapBuffers(window);
         glfwPollEvents();
